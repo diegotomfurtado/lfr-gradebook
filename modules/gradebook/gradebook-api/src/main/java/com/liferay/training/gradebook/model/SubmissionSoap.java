@@ -34,6 +34,7 @@ public class SubmissionSoap implements Serializable {
 	public static SubmissionSoap toSoapModel(Submission model) {
 		SubmissionSoap soapModel = new SubmissionSoap();
 
+		soapModel.setUuid(model.getUuid());
 		soapModel.setSubmissionId(model.getSubmissionId());
 		soapModel.setCompanyId(model.getCompanyId());
 		soapModel.setGroupId(model.getGroupId());
@@ -98,6 +99,14 @@ public class SubmissionSoap implements Serializable {
 
 	public void setPrimaryKey(long pk) {
 		setSubmissionId(pk);
+	}
+
+	public String getUuid() {
+		return _uuid;
+	}
+
+	public void setUuid(String uuid) {
+		_uuid = uuid;
 	}
 
 	public long getSubmissionId() {
@@ -204,6 +213,7 @@ public class SubmissionSoap implements Serializable {
 		_assignmentId = assignmentId;
 	}
 
+	private String _uuid;
 	private long _submissionId;
 	private long _companyId;
 	private long _groupId;

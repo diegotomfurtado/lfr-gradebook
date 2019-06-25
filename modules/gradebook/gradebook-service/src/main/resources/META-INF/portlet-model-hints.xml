@@ -19,6 +19,7 @@
 		<field name="statusDate" type="Date" />
 	</model>
 	<model name="com.liferay.training.gradebook.model.Submission">
+		<field name="uuid" type="String" />
 		<field name="submissionId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="groupId" type="long" />

@@ -40,6 +40,29 @@ public class AssignmentServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.training.gradebook.service.impl.AssignmentServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static com.liferay.training.gradebook.model.Assignment addAssignment(
+			long groupId, java.util.Map<java.util.Locale, String> title,
+			String description, java.util.Date dueDate,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return getService().addAssignment(
+			groupId, title, description, dueDate, serviceContext);
+	}
+
+	public static com.liferay.training.gradebook.model.Assignment
+			deleteAssignment(long assignmentId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return getService().deleteAssignment(assignmentId);
+	}
+
+	public static com.liferay.training.gradebook.model.Assignment getAssignment(
+			long assignmentId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return getService().getAssignment(assignmentId);
+	}
 
 	/**
 	 * Returns the OSGi service identifier.
@@ -48,6 +71,18 @@ public class AssignmentServiceUtil {
 	 */
 	public static String getOSGiServiceIdentifier() {
 		return getService().getOSGiServiceIdentifier();
+	}
+
+	public static com.liferay.training.gradebook.model.Assignment
+			updateAssignment(
+				long assignmentId,
+				java.util.Map<java.util.Locale, String> titleMap,
+				String description, java.util.Date dueDate,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return getService().updateAssignment(
+			assignmentId, titleMap, description, dueDate, serviceContext);
 	}
 
 	public static AssignmentService getService() {

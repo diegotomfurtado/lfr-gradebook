@@ -16,8 +16,10 @@ package com.liferay.training.gradebook.service;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -27,6 +29,7 @@ import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -60,6 +63,10 @@ public interface SubmissionLocalService
 	 *
 	 * Never modify or reference this interface directly. Always use {@link SubmissionLocalServiceUtil} to access the submission local service. Add custom service methods to <code>com.liferay.training.gradebook.service.impl.SubmissionLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
+	public Submission addSubmission(
+			long assignmentId, long studentId, String submissionText,
+			ServiceContext serviceContext)
+		throws PortalException;
 
 	/**
 	 * Adds the submission to the database. Also notifies the appropriate model listeners.
@@ -175,8 +182,23 @@ public interface SubmissionLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Submission fetchSubmission(long submissionId);
 
+	/**
+	 * Returns the submission matching the UUID and group.
+	 *
+	 * @param uuid the submission's UUID
+	 * @param groupId the primary key of the group
+	 * @return the matching submission, or <code>null</code> if a matching submission could not be found
+	 */
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Submission fetchSubmissionByUuidAndGroupId(
+		String uuid, long groupId);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
+		PortletDataContext portletDataContext);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
@@ -204,6 +226,18 @@ public interface SubmissionLocalService
 	public Submission getSubmission(long submissionId) throws PortalException;
 
 	/**
+	 * Returns the submission matching the UUID and group.
+	 *
+	 * @param uuid the submission's UUID
+	 * @param groupId the primary key of the group
+	 * @return the matching submission
+	 * @throws PortalException if a matching submission could not be found
+	 */
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Submission getSubmissionByUuidAndGroupId(String uuid, long groupId)
+		throws PortalException;
+
+	/**
 	 * Returns a range of all the submissions.
 	 *
 	 * <p>
@@ -217,6 +251,40 @@ public interface SubmissionLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Submission> getSubmissions(int start, int end);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Submission> getSubmissionsByAssignment(
+		long groupId, long assignmentId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Submission> getSubmissionsByAssignment(
+		long groupId, long assignmentId, int start, int end);
+
+	/**
+	 * Returns all the submissions matching the UUID and company.
+	 *
+	 * @param uuid the UUID of the submissions
+	 * @param companyId the primary key of the company
+	 * @return the matching submissions, or an empty list if no matches were found
+	 */
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Submission> getSubmissionsByUuidAndCompanyId(
+		String uuid, long companyId);
+
+	/**
+	 * Returns a range of submissions matching the UUID and company.
+	 *
+	 * @param uuid the UUID of the submissions
+	 * @param companyId the primary key of the company
+	 * @param start the lower bound of the range of submissions
+	 * @param end the upper bound of the range of submissions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the range of matching submissions, or an empty list if no matches were found
+	 */
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Submission> getSubmissionsByUuidAndCompanyId(
+		String uuid, long companyId, int start, int end,
+		OrderByComparator<Submission> orderByComparator);
+
 	/**
 	 * Returns the number of submissions.
 	 *
@@ -224,6 +292,21 @@ public interface SubmissionLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getSubmissionsCount();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getSubmissionsCountByAssignment(long groupId, long assignmentId);
+
+	public Submission gradeAndCommentSubmission(
+			long submissionId, int grade, String comment)
+		throws PortalException;
+
+	public Submission gradeSubmission(long submissionId, int grade)
+		throws PortalException;
+
+	public Submission updateSubmission(
+			long submissionId, String submissionText,
+			ServiceContext serviceContext)
+		throws PortalException;
 
 	/**
 	 * Updates the submission in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.

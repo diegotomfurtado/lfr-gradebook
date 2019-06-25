@@ -17,6 +17,7 @@ create table gradebook_Assignment (
 );
 
 create table gradebook_Submission (
+	uuid_ VARCHAR(75) null,
 	submissionId LONG not null primary key,
 	companyId LONG,
 	groupId LONG,

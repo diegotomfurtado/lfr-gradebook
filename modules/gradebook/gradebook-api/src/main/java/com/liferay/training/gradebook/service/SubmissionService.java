@@ -21,9 +21,14 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.jsonwebservice.JSONWebService;
 import com.liferay.portal.kernel.security.access.control.AccessControlled;
 import com.liferay.portal.kernel.service.BaseService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.spring.osgi.OSGiBeanProperties;
 import com.liferay.portal.kernel.transaction.Isolation;
+import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
+import com.liferay.training.gradebook.model.Submission;
+
+import java.util.List;
 
 /**
  * Provides the remote service interface for Submission. Methods of this
@@ -55,6 +60,13 @@ public interface SubmissionService extends BaseService {
 	 *
 	 * Never modify or reference this interface directly. Always use {@link SubmissionServiceUtil} to access the submission remote service. Add custom service methods to <code>com.liferay.training.gradebook.service.impl.SubmissionServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
+	public Submission addSubmission(
+			long assignmentId, long studentId, String submissionText,
+			ServiceContext serviceContext)
+		throws PortalException;
+
+	public Submission deleteSubmission(long submissionId)
+		throws PortalException;
 
 	/**
 	 * Returns the OSGi service identifier.
@@ -62,5 +74,28 @@ public interface SubmissionService extends BaseService {
 	 * @return the OSGi service identifier
 	 */
 	public String getOSGiServiceIdentifier();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Submission> getSubmissionsByAssignment(
+		long groupId, long assignmentId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Submission> getSubmissionsByAssignment(
+		long groupId, long assignmentId, int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getSubmissionsCountByAssignment(long groupId, long assignmentId);
+
+	public Submission gradeAndCommentSubmission(
+			long submissionId, int grade, String comment)
+		throws PortalException;
+
+	public Submission gradeSubmission(long submissionId, int grade)
+		throws PortalException;
+
+	public Submission updateSubmission(
+			long submissionId, String submissionText,
+			ServiceContext serviceContext)
+		throws PortalException;
 
 }

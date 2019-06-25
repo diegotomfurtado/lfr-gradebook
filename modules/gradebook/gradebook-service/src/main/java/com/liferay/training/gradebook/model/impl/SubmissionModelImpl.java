@@ -18,6 +18,7 @@ import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
+import com.liferay.exportimport.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSON;
@@ -28,6 +29,7 @@ import com.liferay.portal.kernel.model.impl.BaseModelImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.training.gradebook.model.Submission;
@@ -72,19 +74,20 @@ public class SubmissionModelImpl
 	public static final String TABLE_NAME = "gradebook_Submission";
 
 	public static final Object[][] TABLE_COLUMNS = {
-		{"submissionId", Types.BIGINT}, {"companyId", Types.BIGINT},
-		{"groupId", Types.BIGINT}, {"userId", Types.BIGINT},
-		{"userName", Types.VARCHAR}, {"createDate", Types.TIMESTAMP},
-		{"modifiedDate", Types.TIMESTAMP}, {"studentId", Types.BIGINT},
-		{"submitDate", Types.TIMESTAMP}, {"submissionText", Types.VARCHAR},
-		{"comment_", Types.VARCHAR}, {"grade", Types.INTEGER},
-		{"assignmentId", Types.BIGINT}
+		{"uuid_", Types.VARCHAR}, {"submissionId", Types.BIGINT},
+		{"companyId", Types.BIGINT}, {"groupId", Types.BIGINT},
+		{"userId", Types.BIGINT}, {"userName", Types.VARCHAR},
+		{"createDate", Types.TIMESTAMP}, {"modifiedDate", Types.TIMESTAMP},
+		{"studentId", Types.BIGINT}, {"submitDate", Types.TIMESTAMP},
+		{"submissionText", Types.VARCHAR}, {"comment_", Types.VARCHAR},
+		{"grade", Types.INTEGER}, {"assignmentId", Types.BIGINT}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
 		new HashMap<String, Integer>();
 
 	static {
+		TABLE_COLUMNS_MAP.put("uuid_", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("submissionId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
@@ -101,7 +104,7 @@ public class SubmissionModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table gradebook_Submission (submissionId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,studentId LONG,submitDate DATE null,submissionText VARCHAR(75) null,comment_ VARCHAR(75) null,grade INTEGER,assignmentId LONG)";
+		"create table gradebook_Submission (uuid_ VARCHAR(75) null,submissionId LONG not null primary key,companyId LONG,groupId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,studentId LONG,submitDate DATE null,submissionText VARCHAR(75) null,comment_ VARCHAR(75) null,grade INTEGER,assignmentId LONG)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table gradebook_Submission";
@@ -135,11 +138,15 @@ public class SubmissionModelImpl
 
 	public static final long ASSIGNMENTID_COLUMN_BITMASK = 1L;
 
-	public static final long GROUPID_COLUMN_BITMASK = 2L;
+	public static final long COMPANYID_COLUMN_BITMASK = 2L;
 
-	public static final long STUDENTID_COLUMN_BITMASK = 4L;
+	public static final long GROUPID_COLUMN_BITMASK = 4L;
 
-	public static final long SUBMISSIONID_COLUMN_BITMASK = 8L;
+	public static final long STUDENTID_COLUMN_BITMASK = 8L;
+
+	public static final long UUID_COLUMN_BITMASK = 16L;
+
+	public static final long SUBMISSIONID_COLUMN_BITMASK = 32L;
 
 	/**
 	 * Converts the soap model instance into a normal model instance.
@@ -154,6 +161,7 @@ public class SubmissionModelImpl
 
 		Submission model = new SubmissionImpl();
 
+		model.setUuid(soapModel.getUuid());
 		model.setSubmissionId(soapModel.getSubmissionId());
 		model.setCompanyId(soapModel.getCompanyId());
 		model.setGroupId(soapModel.getGroupId());
@@ -293,6 +301,26 @@ public class SubmissionModelImpl
 		Map<String, BiConsumer<Submission, ?>> attributeSetterBiConsumers =
 			new LinkedHashMap<String, BiConsumer<Submission, ?>>();
 
+		attributeGetterFunctions.put(
+			"uuid",
+			new Function<Submission, Object>() {
+
+				@Override
+				public Object apply(Submission submission) {
+					return submission.getUuid();
+				}
+
+			});
+		attributeSetterBiConsumers.put(
+			"uuid",
+			new BiConsumer<Submission, Object>() {
+
+				@Override
+				public void accept(Submission submission, Object uuid) {
+					submission.setUuid((String)uuid);
+				}
+
+			});
 		attributeGetterFunctions.put(
 			"submissionId",
 			new Function<Submission, Object>() {
@@ -564,6 +592,32 @@ public class SubmissionModelImpl
 
 	@JSON
 	@Override
+	public String getUuid() {
+		if (_uuid == null) {
+			return "";
+		}
+		else {
+			return _uuid;
+		}
+	}
+
+	@Override
+	public void setUuid(String uuid) {
+		_columnBitmask |= UUID_COLUMN_BITMASK;
+
+		if (_originalUuid == null) {
+			_originalUuid = _uuid;
+		}
+
+		_uuid = uuid;
+	}
+
+	public String getOriginalUuid() {
+		return GetterUtil.getString(_originalUuid);
+	}
+
+	@JSON
+	@Override
 	public long getSubmissionId() {
 		return _submissionId;
 	}
@@ -581,7 +635,19 @@ public class SubmissionModelImpl
 
 	@Override
 	public void setCompanyId(long companyId) {
+		_columnBitmask |= COMPANYID_COLUMN_BITMASK;
+
+		if (!_setOriginalCompanyId) {
+			_setOriginalCompanyId = true;
+
+			_originalCompanyId = _companyId;
+		}
+
 		_companyId = companyId;
+	}
+
+	public long getOriginalCompanyId() {
+		return _originalCompanyId;
 	}
 
 	@JSON
@@ -778,6 +844,12 @@ public class SubmissionModelImpl
 		return _originalAssignmentId;
 	}
 
+	@Override
+	public StagedModelType getStagedModelType() {
+		return new StagedModelType(
+			PortalUtil.getClassNameId(Submission.class.getName()));
+	}
+
 	public long getColumnBitmask() {
 		return _columnBitmask;
 	}
@@ -810,6 +882,7 @@ public class SubmissionModelImpl
 	public Object clone() {
 		SubmissionImpl submissionImpl = new SubmissionImpl();
 
+		submissionImpl.setUuid(getUuid());
 		submissionImpl.setSubmissionId(getSubmissionId());
 		submissionImpl.setCompanyId(getCompanyId());
 		submissionImpl.setGroupId(getGroupId());
@@ -885,6 +958,12 @@ public class SubmissionModelImpl
 	public void resetOriginalValues() {
 		SubmissionModelImpl submissionModelImpl = this;
 
+		submissionModelImpl._originalUuid = submissionModelImpl._uuid;
+
+		submissionModelImpl._originalCompanyId = submissionModelImpl._companyId;
+
+		submissionModelImpl._setOriginalCompanyId = false;
+
 		submissionModelImpl._originalGroupId = submissionModelImpl._groupId;
 
 		submissionModelImpl._setOriginalGroupId = false;
@@ -906,6 +985,14 @@ public class SubmissionModelImpl
 	@Override
 	public CacheModel<Submission> toCacheModel() {
 		SubmissionCacheModel submissionCacheModel = new SubmissionCacheModel();
+
+		submissionCacheModel.uuid = getUuid();
+
+		String uuid = submissionCacheModel.uuid;
+
+		if ((uuid != null) && (uuid.length() == 0)) {
+			submissionCacheModel.uuid = null;
+		}
 
 		submissionCacheModel.submissionId = getSubmissionId();
 
@@ -1044,8 +1131,12 @@ public class SubmissionModelImpl
 		Submission.class, ModelWrapper.class
 	};
 
+	private String _uuid;
+	private String _originalUuid;
 	private long _submissionId;
 	private long _companyId;
+	private long _originalCompanyId;
+	private boolean _setOriginalCompanyId;
 	private long _groupId;
 	private long _originalGroupId;
 	private boolean _setOriginalGroupId;

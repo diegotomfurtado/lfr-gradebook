@@ -21,9 +21,16 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.jsonwebservice.JSONWebService;
 import com.liferay.portal.kernel.security.access.control.AccessControlled;
 import com.liferay.portal.kernel.service.BaseService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.spring.osgi.OSGiBeanProperties;
 import com.liferay.portal.kernel.transaction.Isolation;
+import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
+import com.liferay.training.gradebook.model.Assignment;
+
+import java.util.Date;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Provides the remote service interface for Assignment. Methods of this
@@ -55,6 +62,16 @@ public interface AssignmentService extends BaseService {
 	 *
 	 * Never modify or reference this interface directly. Always use {@link AssignmentServiceUtil} to access the assignment remote service. Add custom service methods to <code>com.liferay.training.gradebook.service.impl.AssignmentServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
+	public Assignment addAssignment(
+			long groupId, Map<Locale, String> title, String description,
+			Date dueDate, ServiceContext serviceContext)
+		throws PortalException;
+
+	public Assignment deleteAssignment(long assignmentId)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Assignment getAssignment(long assignmentId) throws PortalException;
 
 	/**
 	 * Returns the OSGi service identifier.
@@ -62,5 +79,10 @@ public interface AssignmentService extends BaseService {
 	 * @return the OSGi service identifier
 	 */
 	public String getOSGiServiceIdentifier();
+
+	public Assignment updateAssignment(
+			long assignmentId, Map<Locale, String> titleMap, String description,
+			Date dueDate, ServiceContext serviceContext)
+		throws PortalException;
 
 }

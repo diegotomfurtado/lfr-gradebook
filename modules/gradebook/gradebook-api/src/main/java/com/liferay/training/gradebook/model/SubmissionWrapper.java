@@ -17,6 +17,7 @@ package com.liferay.training.gradebook.model;
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.expando.kernel.model.ExpandoBridge;
+import com.liferay.exportimport.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.model.ModelWrapper;
 import com.liferay.portal.kernel.service.ServiceContext;
 
@@ -57,6 +58,7 @@ public class SubmissionWrapper implements Submission, ModelWrapper<Submission> {
 	public Map<String, Object> getModelAttributes() {
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
+		attributes.put("uuid", getUuid());
 		attributes.put("submissionId", getSubmissionId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("groupId", getGroupId());
@@ -76,6 +78,12 @@ public class SubmissionWrapper implements Submission, ModelWrapper<Submission> {
 
 	@Override
 	public void setModelAttributes(Map<String, Object> attributes) {
+		String uuid = (String)attributes.get("uuid");
+
+		if (uuid != null) {
+			setUuid(uuid);
+		}
+
 		Long submissionId = (Long)attributes.get("submissionId");
 
 		if (submissionId != null) {
@@ -325,6 +333,16 @@ public class SubmissionWrapper implements Submission, ModelWrapper<Submission> {
 		return _submission.getUserUuid();
 	}
 
+	/**
+	 * Returns the uuid of this submission.
+	 *
+	 * @return the uuid of this submission
+	 */
+	@Override
+	public String getUuid() {
+		return _submission.getUuid();
+	}
+
 	@Override
 	public int hashCode() {
 		return _submission.hashCode();
@@ -532,6 +550,16 @@ public class SubmissionWrapper implements Submission, ModelWrapper<Submission> {
 		_submission.setUserUuid(userUuid);
 	}
 
+	/**
+	 * Sets the uuid of this submission.
+	 *
+	 * @param uuid the uuid of this submission
+	 */
+	@Override
+	public void setUuid(String uuid) {
+		_submission.setUuid(uuid);
+	}
+
 	@Override
 	public com.liferay.portal.kernel.model.CacheModel<Submission>
 		toCacheModel() {
@@ -576,6 +604,11 @@ public class SubmissionWrapper implements Submission, ModelWrapper<Submission> {
 		}
 
 		return false;
+	}
+
+	@Override
+	public StagedModelType getStagedModelType() {
+		return _submission.getStagedModelType();
 	}
 
 	@Override

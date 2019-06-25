@@ -5,3 +5,5 @@ create unique index IX_1D26EB88 on gradebook_Assignment (uuid_[$COLUMN_LENGTH:75
 
 create index IX_3C5CE5F5 on gradebook_Submission (groupId, assignmentId);
 create index IX_56D7CB71 on gradebook_Submission (studentId, assignmentId);
+create index IX_6023BA85 on gradebook_Submission (uuid_[$COLUMN_LENGTH:75$], companyId);
+create unique index IX_49F31E47 on gradebook_Submission (uuid_[$COLUMN_LENGTH:75$], groupId);

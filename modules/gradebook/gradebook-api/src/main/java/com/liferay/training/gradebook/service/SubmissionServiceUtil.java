@@ -40,6 +40,21 @@ public class SubmissionServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.training.gradebook.service.impl.SubmissionServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static com.liferay.training.gradebook.model.Submission addSubmission(
+			long assignmentId, long studentId, String submissionText,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return getService().addSubmission(
+			assignmentId, studentId, submissionText, serviceContext);
+	}
+
+	public static com.liferay.training.gradebook.model.Submission
+			deleteSubmission(long submissionId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return getService().deleteSubmission(submissionId);
+	}
 
 	/**
 	 * Returns the OSGi service identifier.
@@ -48,6 +63,55 @@ public class SubmissionServiceUtil {
 	 */
 	public static String getOSGiServiceIdentifier() {
 		return getService().getOSGiServiceIdentifier();
+	}
+
+	public static java.util.List
+		<com.liferay.training.gradebook.model.Submission>
+			getSubmissionsByAssignment(long groupId, long assignmentId) {
+
+		return getService().getSubmissionsByAssignment(groupId, assignmentId);
+	}
+
+	public static java.util.List
+		<com.liferay.training.gradebook.model.Submission>
+			getSubmissionsByAssignment(
+				long groupId, long assignmentId, int start, int end) {
+
+		return getService().getSubmissionsByAssignment(
+			groupId, assignmentId, start, end);
+	}
+
+	public static int getSubmissionsCountByAssignment(
+		long groupId, long assignmentId) {
+
+		return getService().getSubmissionsCountByAssignment(
+			groupId, assignmentId);
+	}
+
+	public static com.liferay.training.gradebook.model.Submission
+			gradeAndCommentSubmission(
+				long submissionId, int grade, String comment)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return getService().gradeAndCommentSubmission(
+			submissionId, grade, comment);
+	}
+
+	public static com.liferay.training.gradebook.model.Submission
+			gradeSubmission(long submissionId, int grade)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return getService().gradeSubmission(submissionId, grade);
+	}
+
+	public static com.liferay.training.gradebook.model.Submission
+			updateSubmission(
+				long submissionId, String submissionText,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return getService().updateSubmission(
+			submissionId, submissionText, serviceContext);
 	}
 
 	public static SubmissionService getService() {

@@ -16,9 +16,19 @@ package com.liferay.training.gradebook.service.http;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.LocalizationUtil;
+import com.liferay.training.gradebook.service.AssignmentServiceUtil;
+
+import java.rmi.RemoteException;
+
+import java.util.Locale;
+import java.util.Map;
+
 /**
  * Provides the SOAP utility for the
- * <code>com.liferay.training.gradebook.service.AssignmentServiceUtil</code> service
+ * <code>AssignmentServiceUtil</code> service
  * utility. The static methods of this class call the same methods of the
  * service utility. However, the signatures are different because it is
  * difficult for SOAP to support certain types.
@@ -57,4 +67,96 @@ import aQute.bnd.annotation.ProviderType;
  */
 @ProviderType
 public class AssignmentServiceSoap {
+
+	public static com.liferay.training.gradebook.model.AssignmentSoap
+			addAssignment(
+				long groupId, String[] titleLanguageIds, String[] titleValues,
+				String description, java.util.Date dueDate,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws RemoteException {
+
+		try {
+			Map<Locale, String> title = LocalizationUtil.getLocalizationMap(
+				titleLanguageIds, titleValues);
+
+			com.liferay.training.gradebook.model.Assignment returnValue =
+				AssignmentServiceUtil.addAssignment(
+					groupId, title, description, dueDate, serviceContext);
+
+			return com.liferay.training.gradebook.model.AssignmentSoap.
+				toSoapModel(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static com.liferay.training.gradebook.model.AssignmentSoap
+			deleteAssignment(long assignmentId)
+		throws RemoteException {
+
+		try {
+			com.liferay.training.gradebook.model.Assignment returnValue =
+				AssignmentServiceUtil.deleteAssignment(assignmentId);
+
+			return com.liferay.training.gradebook.model.AssignmentSoap.
+				toSoapModel(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static com.liferay.training.gradebook.model.AssignmentSoap
+			getAssignment(long assignmentId)
+		throws RemoteException {
+
+		try {
+			com.liferay.training.gradebook.model.Assignment returnValue =
+				AssignmentServiceUtil.getAssignment(assignmentId);
+
+			return com.liferay.training.gradebook.model.AssignmentSoap.
+				toSoapModel(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static com.liferay.training.gradebook.model.AssignmentSoap
+			updateAssignment(
+				long assignmentId, String[] titleMapLanguageIds,
+				String[] titleMapValues, String description,
+				java.util.Date dueDate,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws RemoteException {
+
+		try {
+			Map<Locale, String> titleMap = LocalizationUtil.getLocalizationMap(
+				titleMapLanguageIds, titleMapValues);
+
+			com.liferay.training.gradebook.model.Assignment returnValue =
+				AssignmentServiceUtil.updateAssignment(
+					assignmentId, titleMap, description, dueDate,
+					serviceContext);
+
+			return com.liferay.training.gradebook.model.AssignmentSoap.
+				toSoapModel(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	private static Log _log = LogFactoryUtil.getLog(
+		AssignmentServiceSoap.class);
+
 }

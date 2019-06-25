@@ -48,6 +48,17 @@ public class AssignmentLocalServiceWrapper
 		return _assignmentLocalService.addAssignment(assignment);
 	}
 
+	@Override
+	public com.liferay.training.gradebook.model.Assignment addAssignment(
+			long groupId, java.util.Map<java.util.Locale, String> titleMap,
+			String description, java.util.Date dueDate,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _assignmentLocalService.addAssignment(
+			groupId, titleMap, description, dueDate, serviceContext);
+	}
+
 	/**
 	 * Creates a new assignment with the primary key. Does not add the assignment to the database.
 	 *
@@ -269,6 +280,21 @@ public class AssignmentLocalServiceWrapper
 		return _assignmentLocalService.getAssignments(start, end);
 	}
 
+	@Override
+	public java.util.List<com.liferay.training.gradebook.model.Assignment>
+		getAssignmentsByGroupId(long groupId) {
+
+		return _assignmentLocalService.getAssignmentsByGroupId(groupId);
+	}
+
+	@Override
+	public java.util.List<com.liferay.training.gradebook.model.Assignment>
+		getAssignmentsByGroupId(long groupId, int start, int end) {
+
+		return _assignmentLocalService.getAssignmentsByGroupId(
+			groupId, start, end);
+	}
+
 	/**
 	 * Returns all the assignments matching the UUID and company.
 	 *
@@ -317,6 +343,11 @@ public class AssignmentLocalServiceWrapper
 	}
 
 	@Override
+	public int getAssignmentsCountByGroupId(long groupId) {
+		return _assignmentLocalService.getAssignmentsCountByGroupId(groupId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext
@@ -362,6 +393,17 @@ public class AssignmentLocalServiceWrapper
 		com.liferay.training.gradebook.model.Assignment assignment) {
 
 		return _assignmentLocalService.updateAssignment(assignment);
+	}
+
+	@Override
+	public com.liferay.training.gradebook.model.Assignment updateAssignment(
+			long assignmentId, java.util.Map<java.util.Locale, String> titleMap,
+			String description, java.util.Date dueDate,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _assignmentLocalService.updateAssignment(
+			assignmentId, titleMap, description, dueDate, serviceContext);
 	}
 
 	@Override

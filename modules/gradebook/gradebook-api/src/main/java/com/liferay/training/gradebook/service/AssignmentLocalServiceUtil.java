@@ -53,6 +53,16 @@ public class AssignmentLocalServiceUtil {
 		return getService().addAssignment(assignment);
 	}
 
+	public static com.liferay.training.gradebook.model.Assignment addAssignment(
+			long groupId, java.util.Map<java.util.Locale, String> titleMap,
+			String description, java.util.Date dueDate,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return getService().addAssignment(
+			groupId, titleMap, description, dueDate, serviceContext);
+	}
+
 	/**
 	 * Creates a new assignment with the primary key. Does not add the assignment to the database.
 	 *
@@ -260,6 +270,20 @@ public class AssignmentLocalServiceUtil {
 		return getService().getAssignments(start, end);
 	}
 
+	public static java.util.List
+		<com.liferay.training.gradebook.model.Assignment>
+			getAssignmentsByGroupId(long groupId) {
+
+		return getService().getAssignmentsByGroupId(groupId);
+	}
+
+	public static java.util.List
+		<com.liferay.training.gradebook.model.Assignment>
+			getAssignmentsByGroupId(long groupId, int start, int end) {
+
+		return getService().getAssignmentsByGroupId(groupId, start, end);
+	}
+
 	/**
 	 * Returns all the assignments matching the UUID and company.
 	 *
@@ -305,6 +329,10 @@ public class AssignmentLocalServiceUtil {
 		return getService().getAssignmentsCount();
 	}
 
+	public static int getAssignmentsCountByGroupId(long groupId) {
+		return getService().getAssignmentsCountByGroupId(groupId);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext
@@ -347,6 +375,18 @@ public class AssignmentLocalServiceUtil {
 			com.liferay.training.gradebook.model.Assignment assignment) {
 
 		return getService().updateAssignment(assignment);
+	}
+
+	public static com.liferay.training.gradebook.model.Assignment
+			updateAssignment(
+				long assignmentId,
+				java.util.Map<java.util.Locale, String> titleMap,
+				String description, java.util.Date dueDate,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return getService().updateAssignment(
+			assignmentId, titleMap, description, dueDate, serviceContext);
 	}
 
 	public static AssignmentLocalService getService() {

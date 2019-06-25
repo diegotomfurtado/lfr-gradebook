@@ -35,6 +35,16 @@ public class SubmissionLocalServiceWrapper
 		_submissionLocalService = submissionLocalService;
 	}
 
+	@Override
+	public com.liferay.training.gradebook.model.Submission addSubmission(
+			long assignmentId, long studentId, String submissionText,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _submissionLocalService.addSubmission(
+			assignmentId, studentId, submissionText, serviceContext);
+	}
+
 	/**
 	 * Adds the submission to the database. Also notifies the appropriate model listeners.
 	 *
@@ -197,11 +207,36 @@ public class SubmissionLocalServiceWrapper
 		return _submissionLocalService.fetchSubmission(submissionId);
 	}
 
+	/**
+	 * Returns the submission matching the UUID and group.
+	 *
+	 * @param uuid the submission's UUID
+	 * @param groupId the primary key of the group
+	 * @return the matching submission, or <code>null</code> if a matching submission could not be found
+	 */
+	@Override
+	public com.liferay.training.gradebook.model.Submission
+		fetchSubmissionByUuidAndGroupId(String uuid, long groupId) {
+
+		return _submissionLocalService.fetchSubmissionByUuidAndGroupId(
+			uuid, groupId);
+	}
+
 	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
 		return _submissionLocalService.getActionableDynamicQuery();
+	}
+
+	@Override
+	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
+		getExportActionableDynamicQuery(
+			com.liferay.exportimport.kernel.lar.PortletDataContext
+				portletDataContext) {
+
+		return _submissionLocalService.getExportActionableDynamicQuery(
+			portletDataContext);
 	}
 
 	@Override
@@ -245,6 +280,23 @@ public class SubmissionLocalServiceWrapper
 	}
 
 	/**
+	 * Returns the submission matching the UUID and group.
+	 *
+	 * @param uuid the submission's UUID
+	 * @param groupId the primary key of the group
+	 * @return the matching submission
+	 * @throws PortalException if a matching submission could not be found
+	 */
+	@Override
+	public com.liferay.training.gradebook.model.Submission
+			getSubmissionByUuidAndGroupId(String uuid, long groupId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _submissionLocalService.getSubmissionByUuidAndGroupId(
+			uuid, groupId);
+	}
+
+	/**
 	 * Returns a range of all the submissions.
 	 *
 	 * <p>
@@ -262,6 +314,60 @@ public class SubmissionLocalServiceWrapper
 		return _submissionLocalService.getSubmissions(start, end);
 	}
 
+	@Override
+	public java.util.List<com.liferay.training.gradebook.model.Submission>
+		getSubmissionsByAssignment(long groupId, long assignmentId) {
+
+		return _submissionLocalService.getSubmissionsByAssignment(
+			groupId, assignmentId);
+	}
+
+	@Override
+	public java.util.List<com.liferay.training.gradebook.model.Submission>
+		getSubmissionsByAssignment(
+			long groupId, long assignmentId, int start, int end) {
+
+		return _submissionLocalService.getSubmissionsByAssignment(
+			groupId, assignmentId, start, end);
+	}
+
+	/**
+	 * Returns all the submissions matching the UUID and company.
+	 *
+	 * @param uuid the UUID of the submissions
+	 * @param companyId the primary key of the company
+	 * @return the matching submissions, or an empty list if no matches were found
+	 */
+	@Override
+	public java.util.List<com.liferay.training.gradebook.model.Submission>
+		getSubmissionsByUuidAndCompanyId(String uuid, long companyId) {
+
+		return _submissionLocalService.getSubmissionsByUuidAndCompanyId(
+			uuid, companyId);
+	}
+
+	/**
+	 * Returns a range of submissions matching the UUID and company.
+	 *
+	 * @param uuid the UUID of the submissions
+	 * @param companyId the primary key of the company
+	 * @param start the lower bound of the range of submissions
+	 * @param end the upper bound of the range of submissions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the range of matching submissions, or an empty list if no matches were found
+	 */
+	@Override
+	public java.util.List<com.liferay.training.gradebook.model.Submission>
+		getSubmissionsByUuidAndCompanyId(
+			String uuid, long companyId, int start, int end,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<com.liferay.training.gradebook.model.Submission>
+					orderByComparator) {
+
+		return _submissionLocalService.getSubmissionsByUuidAndCompanyId(
+			uuid, companyId, start, end, orderByComparator);
+	}
+
 	/**
 	 * Returns the number of submissions.
 	 *
@@ -270,6 +376,42 @@ public class SubmissionLocalServiceWrapper
 	@Override
 	public int getSubmissionsCount() {
 		return _submissionLocalService.getSubmissionsCount();
+	}
+
+	@Override
+	public int getSubmissionsCountByAssignment(
+		long groupId, long assignmentId) {
+
+		return _submissionLocalService.getSubmissionsCountByAssignment(
+			groupId, assignmentId);
+	}
+
+	@Override
+	public com.liferay.training.gradebook.model.Submission
+			gradeAndCommentSubmission(
+				long submissionId, int grade, String comment)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _submissionLocalService.gradeAndCommentSubmission(
+			submissionId, grade, comment);
+	}
+
+	@Override
+	public com.liferay.training.gradebook.model.Submission gradeSubmission(
+			long submissionId, int grade)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _submissionLocalService.gradeSubmission(submissionId, grade);
+	}
+
+	@Override
+	public com.liferay.training.gradebook.model.Submission updateSubmission(
+			long submissionId, String submissionText,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _submissionLocalService.updateSubmission(
+			submissionId, submissionText, serviceContext);
 	}
 
 	/**

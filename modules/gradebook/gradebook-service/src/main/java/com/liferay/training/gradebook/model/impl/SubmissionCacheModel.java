@@ -64,9 +64,11 @@ public class SubmissionCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(27);
+		StringBundler sb = new StringBundler(29);
 
-		sb.append("{submissionId=");
+		sb.append("{uuid=");
+		sb.append(uuid);
+		sb.append(", submissionId=");
 		sb.append(submissionId);
 		sb.append(", companyId=");
 		sb.append(companyId);
@@ -100,6 +102,13 @@ public class SubmissionCacheModel
 	@Override
 	public Submission toEntityModel() {
 		SubmissionImpl submissionImpl = new SubmissionImpl();
+
+		if (uuid == null) {
+			submissionImpl.setUuid("");
+		}
+		else {
+			submissionImpl.setUuid(uuid);
+		}
 
 		submissionImpl.setSubmissionId(submissionId);
 		submissionImpl.setCompanyId(companyId);
@@ -160,6 +169,8 @@ public class SubmissionCacheModel
 
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
+		uuid = objectInput.readUTF();
+
 		submissionId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
@@ -183,6 +194,13 @@ public class SubmissionCacheModel
 
 	@Override
 	public void writeExternal(ObjectOutput objectOutput) throws IOException {
+		if (uuid == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(uuid);
+		}
+
 		objectOutput.writeLong(submissionId);
 
 		objectOutput.writeLong(companyId);
@@ -223,6 +241,7 @@ public class SubmissionCacheModel
 		objectOutput.writeLong(assignmentId);
 	}
 
+	public String uuid;
 	public long submissionId;
 	public long companyId;
 	public long groupId;

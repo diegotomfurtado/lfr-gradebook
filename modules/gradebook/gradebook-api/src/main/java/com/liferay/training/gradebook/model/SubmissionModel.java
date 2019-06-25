@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.GroupedModel;
 import com.liferay.portal.kernel.model.ShardedModel;
+import com.liferay.portal.kernel.model.StagedAuditedModel;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 import java.io.Serializable;
@@ -41,7 +42,8 @@ import java.util.Date;
  */
 @ProviderType
 public interface SubmissionModel
-	extends BaseModel<Submission>, GroupedModel, ShardedModel {
+	extends BaseModel<Submission>, GroupedModel, ShardedModel,
+			StagedAuditedModel {
 
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -62,6 +64,23 @@ public interface SubmissionModel
 	 * @param primaryKey the primary key of this submission
 	 */
 	public void setPrimaryKey(long primaryKey);
+
+	/**
+	 * Returns the uuid of this submission.
+	 *
+	 * @return the uuid of this submission
+	 */
+	@AutoEscape
+	@Override
+	public String getUuid();
+
+	/**
+	 * Sets the uuid of this submission.
+	 *
+	 * @param uuid the uuid of this submission
+	 */
+	@Override
+	public void setUuid(String uuid);
 
 	/**
 	 * Returns the submission ID of this submission.
